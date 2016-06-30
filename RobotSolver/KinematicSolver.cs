@@ -210,14 +210,6 @@ namespace RobotSolver
             theta1a = Math.Atan2(Wrist.Y, Wrist.X);                                     // Forwards facing
             theta1b = (theta1a < 0) ? theta1a - Math.PI : theta1a + Math.PI;            // Backwards facing
 
-            if (theta1a < AxisRange[0][1] * Math.PI / 180 || theta1a > AxisRange[0][0] * Math.PI / 180)
-            {
-                theta1a = 0;
-            }
-            if (theta1b < AxisRange[0][1] * Math.PI / 180 || theta1b > AxisRange[0][0] * Math.PI / 180)
-            {
-                theta1b = 0;
-            }
 
             Vector3 Base = new Vector3(0, 0, (float)robotConfig[0]);
             Vector3 LinkBW = Wrist - Base;
@@ -252,90 +244,39 @@ namespace RobotSolver
                 alpha = Math.PI;
             }
 
-            if (basePos == BasePosition.front)
-            {
                 theta2u = Math.PI - (beta + gamma);
                 theta2d = Math.PI - (beta - gamma);
                 theta3u = Math.PI + wristOffset - alpha;
                 theta3d = -(Math.PI - alpha - wristOffset);
-            }
-            else
-            {
-                theta2u = -Math.PI + (beta - gamma);
-                theta2d = -Math.PI + (beta + gamma);
-                theta3u = Math.PI + wristOffset - alpha;
-                theta3d = -Math.PI + alpha + wristOffset;
-            }
-            if (Math.Abs(lastVal[1] - theta2u) < Math.Abs(lastVal[1] - theta2d))
-            {
-                theta2 = theta2u;
-                theta3 = theta3u;
-                elbow = ElbowPosition.up;
-            }
-            else
-            {
-                theta2 = theta2d;
-                theta3 = theta3d;
-                elbow = ElbowPosition.down;
-            }
 
-            if (elbow == ElbowPosition.up)
-            {
-                if (theta2u > (-190.0 * Math.PI / 180) && theta2u < (1.0 * Math.PI / 4) && theta3u < (156.0 * Math.PI / 180) && theta3u > (-120.0 * Math.PI / 180))
-                {
-                    theta2 = theta2u;
-                    theta3 = theta3u;
-                }
-                else if ((theta2d > (-190.0 * Math.PI / 180) && theta2d < (1.0 * Math.PI / 4)) && (theta3d < (156.0 * Math.PI / 180) && (theta3d > (-120.0 * Math.PI / 180))))
-                {
-                    elbow = ElbowPosition.down;
-                    theta2 = theta2d;
-                    theta3 = theta3d;
-                }
-                else
-                {
-                    throw new InverseKinematicsException("Out of workspace, Axis 2 error");
-                }
-            }
-            else if (elbow == ElbowPosition.down)
-            {
-                if ((theta2d > (-190.0 * Math.PI / 180) && theta2d < (1.0 * Math.PI / 4)) && (theta3d < (156.0 * Math.PI / 180) && (theta3d > (-120.0 * Math.PI / 180))))
-                {
-                    theta2 = theta2d;
-                    theta3 = theta3d;
-                }
-                else if (theta2u > (-190.0 * Math.PI / 180) && theta2u < (1.0 * Math.PI / 4) && theta3u < (156.0 * Math.PI / 180) && theta3u > (-120.0 * Math.PI / 180))
-                {
-                    elbow = ElbowPosition.up;
-                    theta2 = theta2u;
-                    theta3 = theta3u;
-                }
-                else
-                {
-                    throw new InverseKinematicsException("Out of workspace, Axis 3 Error");
-                }
-            }
-            else
-            {
 
-                if (theta2u > (-190.0 * Math.PI / 180) && theta2u < (1.0 * Math.PI / 4) && theta3u < (156.0 * Math.PI / 180) && theta3u > (-120.0 * Math.PI / 180))
+
+                if (theta1a < AxisRange[0][1] * Math.PI / 180 || theta1a > AxisRange[0][0] * Math.PI / 180)
                 {
-                    elbow = ElbowPosition.up;
-                    theta2 = theta2u;
-                    theta3 = theta3u;
+                    theta1a = 0;
                 }
-                else if ((theta2d > (-190.0 * Math.PI / 180) && theta2d < (1.0 * Math.PI / 4)) && (theta3d < (156.0 * Math.PI / 180) && (theta3d > (-120.0 * Math.PI / 180))))
+                if (theta1b < AxisRange[0][1] * Math.PI / 180 || theta1b > AxisRange[0][0] * Math.PI / 180)
                 {
-                    elbow = ElbowPosition.down;
-                    theta2 = theta2d;
-                    theta3 = theta3d;
+                    theta1b = 0;
                 }
-                else
+                if (theta2d < AxisRange[1][1] * Math.PI / 180 || theta2d > AxisRange[1][0] * Math.PI / 180)
                 {
-                    throw new InverseKinematicsException("Out of workspace, Axis 2/3 Error");
+                    theta2d = 0;
                 }
-            }
-            return new double[] { theta1, theta2, theta3 };
+                if (theta2u < AxisRange[1][1] * Math.PI / 180 || theta2u > AxisRange[1][0] * Math.PI / 180)
+                {
+                    theta2u = 0;
+                }
+                if (theta3u < AxisRange[2][1] * Math.PI / 180 || theta3u > AxisRange[2][0] * Math.PI / 180)
+                {
+                    theta3u = 0;
+                }
+                if (theta3d < AxisRange[2][1] * Math.PI / 180 || theta` 3d > AxisRange[2][0] * Math.PI / 180)
+                {
+                    theta3d = 0;
+                }
+
+                return new double[] { theta1a, theta1b, theta2u, theta2d, theta3u, theta3d };
         }
 
         
